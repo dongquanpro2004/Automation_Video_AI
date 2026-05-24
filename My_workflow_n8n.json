@@ -1,0 +1,107 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        -160
+      ],
+      "id": "c7a8d14d-41d1-425f-a6ff-0875af919248",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer "
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"model\": \"llama-3.1-8b-instant\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"Hãy viết một châm ngôn cuộc sống ấm áp, một mẹo tâm lý tích cực hoặc một sự thật khoa học/độc lạ kỳ thú giúp người nghe cảm thấy vui vẻ, giảm áp lực. Giọng điệu tươi sáng, cuốn hút. Độ dài dưới 40 từ bằng tiếng Việt.\\n\\n⚠️ YÊU CẦU AN TOÀN TUYỆT ĐỐI:\\n- Tuyệt đối TRÁNH XA các chủ đề nhạy cảm như pháp luật, chính trị, giới tính, chết chóc, tự tử, bạo lực, giết chóc.\\n- Nội dung phải hoàn toàn trong sạch, tươi sáng.\\n\\nTrả về cấu trúc JSON thuần túy, không dùng định dạng markdown. Cấu trúc JSON bắt buộc phải có đúng 2 trường:\\n1. 'voice_text': Đoạn văn bản tiếng Việt để đọc thoại.\\n2. 'image_prompt': Một đoạn Prompt tiếng Anh (từ 50-70 từ) mô tả bối cảnh hoạt hình để vẽ ảnh dọc 9:16. \\n\\n🔥 QUY TẮC BẮT BUỘC ĐỂ ẢNH VÀ VIDEO ĐẠT PHONG CÁCH HOẠT HÌNH 3D CHUYỂN ĐỘNG SINH ĐỘNG:\\n- CẤM tạo ảnh người thật. Phải ép buộc vẽ theo phong cách: 'Vibrant 3D cartoon style, Disney Pixar animation style, cute character design, colorful, highly detailed, cinematic pastel colors'.\\n- Góc máy Cận cảnh (Close-up) hoặc Trung cảnh (Medium Shot) tập trung vào một nhân vật hoạt hình đáng yêu hoặc một vật phẩm ma thuật (Ví dụ: một chú mèo hoạt hình nhỏ đang ôm mầm cây phát sáng, một nhân vật hoạt hình nhỏ đang mỉm cười nhắm mắt, hoặc một tách trà hoạt hình ma thuật đang bốc khói).\\n- MÔ TẢ CHI TIẾT HIỆU ỨNG HOẠT HỌA CHUYỂN ĐỘNG (ANIMATION EFFECTS): mô tả cụ thể các phần tử chuyển động xung quanh để AI thổi hồn hoạt hình vào như 'magical glowing dust swirling in the air, character gently smiling and blinking, beautiful sparkling stars floating around, steam softly dancing above the hot tea, cute leaves waving in the gentle breeze, rich vibrant animated physics'.\"\n    }\n  ],\n  \"response_format\": { \"type\": \"json_object\" }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -272,
+        -160
+      ],
+      "id": "32493177-2a5f-43c2-92df-ef335d02ebae",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8000/render",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "voice_text",
+              "value": "={{ JSON.parse($json.choices[0].message.content).voice_text }}"
+            },
+            {
+              "name": "image_prompt",
+              "value": "={{ JSON.parse($json.choices[0].message.content).image_prompt }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -64,
+        -160
+      ],
+      "id": "6fe210e9-64c1-4b0a-ac55-6911356ac0fd",
+      "name": "HTTP Request1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "682ee5d4-a988-4a83-8884-89da17b3f660",
+  "meta": {
+    "instanceId": "79d148ee9aa845026c22e4e3455c5163ef69589bb50f73124d2516e62d1fe7fe"
+  },
+  "id": "zsuS8f9VuvCbE62N",
+  "tags": []
+}
