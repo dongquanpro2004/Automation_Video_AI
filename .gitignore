@@ -1,0 +1,17 @@
+# Môi trường ảo Python
+venv/
+.env
+
+# Thư mục tạm của Python
+__pycache__/
+*.pyc
+
+# Các tệp đầu ra tạm thời và thành phẩm (tránh nặng Git)
+voice.mp3
+background.jpg
+background_padded.jpg
+ai_silent.mp4
+final_shorts.mp4
+
+# Các tệp test phụ
+test_*
